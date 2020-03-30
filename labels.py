@@ -1,4 +1,5 @@
 #File containing all header and data structures needed for processing the NSL-KDD Dataset
+import numpy as np
 
 data_headers = [
     "duration",
@@ -45,6 +46,47 @@ data_headers = [
     "attack",
     "unknown"
 ]
+
+attack_generation_labels = {
+    "duration": range(0, 42908),
+    "src_bytes": range(0 , 1379963888),
+    "dst_bytes": range(0, 1309937401),
+    "land": range(0, 2),
+    "wrong_fragment": range(0, 4),
+    "urgent": range(0, 4),
+    "hot": range(0,4),
+    "num_failed_logins": range(0 ,5),
+    "logged_in": range(0 ,2),
+    "num_compromised": range(0, 7480),
+    "root_shell": range(0, 2),
+    "su_attempted": range(0, 3),
+    "num_root": range(0, 7469),
+    "num_file_creations": range(0, 44),
+    "num_shells": range(0, 3),
+    "num_access_files": range(0, 10),
+    "num_outbound_cmds": range(0, 2),
+    "is_hot_login": range(0 ,2),
+    "is_guest_login": range(0 ,2),
+    "count": range(0, 512),
+    "srv_count": range(0, 512),
+    "serror_rate": range(0 ,2),
+    "srv_serror_rate": range(0 ,2),
+    "rerror_rate": range(0 ,2),
+    "srv_rerror_rate": range(0 ,2),
+    "same_srv_rate": range(0 ,2),
+    "diff_srv_rat": range(0 ,2),
+    "srv_diff_host_rate": range(0 ,2),
+    "dst_houst_count": range(0, 256),
+    "dst_host_srv_count": range(0 ,2),
+    "dst_host_same_srv_rate": range(0 ,2),
+    "dst_host_diff_srv_rate": range(0 ,2),
+    "dst_host_same_src_port_rate": range(0 ,2),
+    "dst_host_srv_diff_host_rate": range(0 ,2),
+    "dst_host_serror_rate": range(0 ,2),
+    "dst_host_srv_serror_rate": range(0 ,2),
+    "dst_host_rerror_rate": range(0 ,2),
+    "dst_host_srv_rerror_rate": range(0 ,2),
+}
 
 attack_dict = {
     'normal': 'normal',

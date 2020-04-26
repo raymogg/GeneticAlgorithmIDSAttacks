@@ -158,8 +158,7 @@ class GeneticAlgorithm:
 
         print("Running Genetic Algorithm")
         for j in range(iterations):
-            if (self.DEBUG):
-                print("GENERATION: " + str(j))
+            print("GENERATION: " + str(j))
             offspring = []
             for index in range(offspring_number):
                 parent1 = random.randint(0, len(population) -1)
@@ -179,7 +178,9 @@ class GeneticAlgorithm:
             #Trim population if too large
             if (len(fittest_samples) > fittest_num):
                 population = fittest_samples[len(fittest_samples) - fittest_num: ]
-            self.display_population_statistics(population)
+            
+            if self.DEBUG:
+                self.display_population_statistics(population)
             raw_population = population
             population = list(map(self.sample_extractor, population))
 

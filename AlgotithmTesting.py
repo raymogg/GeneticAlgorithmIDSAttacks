@@ -3,6 +3,11 @@ import matplotlib.pyplot as plt
 from labels import data_headers
 import numpy as np
 
+# File for testing the algorithm
+# Includes functions for hyperparameter testing, computing statistics of tests
+# and plotting
+
+
 def calculatePopulationStatistics(population):
         #Fittest sample, weakest sample, number of attacks
         num_attacks = 0
@@ -31,72 +36,93 @@ def extractPlotLabels(rawLabels):
     
     return plot_labels
 
-nmap_attack = [0,'icmp','eco_i','SF',8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,15,0.00,0.00,0.00,0.00,1.00,0.00,1.00,2,46,1.00,0.00,1.00,0.26,0.00,0.00,0.00,0.00,'nmap',17]
-teardrop_attack = [0, 'udp', 'private', 'SF', 28, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 82, 82, 0.00, 0.00, 0.00, 0.00, 1.00, 0.00, 0.00, 255, 182, 0.71, 0.29, 0.71, 0.00, 0.09, 0.00, 0.20, 0.00,'teardrop',16]
+def plotTestingData(testingData):
+    x = []
+    y = []
+    for entry in testingData.keys():
+        x.append(entry)
+        y.append(testingData[entry][0][2])
 
-#Below is various testing functions. TODO Make this a class and pick what to run
+    print(x)
+    print(y)
+    plt.plot(x, y)
+    plt.show()
 
-#Basic run of algorithm Begin Algorithm
-# algorithm = GeneticAlgorithm(True, 20, "teardrop")
-# print("Starting Sample")
-# print(teardrop_attack)
-# model = algorithm.getModel()
-# final_population = algorithm.run_algorithm(teardrop_attack, 2, 4, 2)
+#Runs a basic test on the algorithm and plots the returned sample
+def basicAlgorithmTest():
+    algorithm = GeneticAlgorithm(True, 18, "teardrop")
+    model = algorithm.getModel()
+    final_population = algorithm.run_algorithm(20, 20, 10)
+
+    # # #Plot original sample and fittest final sample
+    fig, ax = plt.subplots()
+    x_range = np.arange(38)
+    width = 0.2
+    seed_sample = ax.bar(x_range, extractPlotData(algorithm.getSeedAttack()), width, color='r')
+    #TODO plot more than one sample
+    fittest_sample = ax.bar(x_range+width, extractPlotData(final_population[len(final_population) - 1]['sample']), width, color='y')
+    ax.legend((seed_sample[0], fittest_sample[0]), ('Parent', 'Attack'))
+    plt.xticks(labels=extractPlotLabels(data_headers), ticks=range(38), rotation=90)
+    plt.grid(True)
+    plt.show()
 
 
 
 #Testing mutation variable
-#Test each variable 5 times
-# data = {}
-# for i in range(0, 55, 5):
-#     data[i] =  []
-#     algorithm = GeneticAlgorithm(False, i, "nmap")
-#     for j in range(5):
-#         result = algorithm.run_algorithm(nmap_attack, 20, 20, 10)
-#         result_metrics = calculatePopulationStatistics(result)
-#         print(result_metrics)
-#         data[i].append(result_metrics)
+#Runs through a range of mutation variable values and computes fitness scores
+#and number of attack vs benign samples
+def testMutationVariable():
+    #Test each variable 5 times
+    data = {}
+    for i in range(0, 55, 5):
+        data[i] =  []
+        algorithm = GeneticAlgorithm(False, i, "nmap")
+        for j in range(5):
+            result = algorithm.run_algorithm(algorithm.getSeedAttack(), 20, 20, 10)
+            result_metrics = calculatePopulationStatistics(result)
+            print(result_metrics)
+            data[i].append(result_metrics)
 
-# avg_results = {}
-# for k in data.keys():
-#     sum_max = 0
-#     sum_min = 0
-#     sum_attacks = 0
-#     for row in data[k]:
-#         sum_max += row[0]
-#         sum_min += row[1]
-#         sum_attacks += row[2]
-    
-#     avg_max = sum_max / 5.0
-#     avg_min = sum_min / 5.0
-#     avg_attacks = sum_attacks / 5
-#     avgs = [avg_max, avg_min, avg_attacks]
-#     avg_results[k] = avgs
-# print(avg_results)
+    avg_results = {}
+    for k in data.keys():
+        sum_max = 0
+        sum_min = 0
+        sum_attacks = 0
+        for row in data[k]:
+            sum_max += row[0]
+            sum_min += row[1]
+            sum_attacks += row[2]
+        
+        avg_max = sum_max / 5.0
+        avg_min = sum_min / 5.0
+        avg_attacks = sum_attacks / 5
+        avgs = [avg_max, avg_min, avg_attacks]
+        avg_results[k] = avgs
+    print(avg_results)
 
-#Plotting of produced attacks
-# algorithm = GeneticAlgorithm(False, 25, "teardrop")
-# results = algorithm.run_algorithm(teardrop_attack, 20, 20, 10)
-# print(results)
-# # #Plot original sample and fittest final sample
-# fig, ax = plt.subplots()
-# x_range = np.arange(38)
-# width = 0.2
-# seed_sample = ax.bar(x_range, extractPlotData(teardrop_attack), width, color='r')
-# fittest_sample = ax.bar(x_range+width, extractPlotData(results[len(results) - 1]['sample']), width, color='y')
-# ax.legend((seed_sample[0], fittest_sample[0]), ('Parent', 'Attack'))
-# plt.xticks(labels=extractPlotLabels(data_headers), ticks=range(38), rotation=90)
-# plt.grid(True)
-# plt.show()
+#Function for testing the number of generations produced
+def testGenerationsVariables():
+    #Testing number of generations vs fitness
+    data = {}
+    algorithm = GeneticAlgorithm(False, 20, "teardrop")
+    for i in range(200, 550, 50):
+        data[i] = []
+        result = algorithm.run_algorithm(algorithm.getSeedAttack(), i, 20, 10)
+        result_metrics = calculatePopulationStatistics(result)
+        print(result_metrics)
+        data[i].append(result_metrics)
 
-##Testing number of generations vs fitness
-data = {}
-algorithm = GeneticAlgorithm(False, 20, "teardrop")
-for i in range(200, 550, 50):
-    data[i] = []
-    result = algorithm.run_algorithm(teardrop_attack, i, 20, 10)
-    result_metrics = calculatePopulationStatistics(result)
-    print(result_metrics)
-    data[i].append(result_metrics)
+#Testing number of number of offspring and fittest num variables (number of fittest off spring to take)
+#Tests the ratio of offspring to fittest numbers that produce the best results.
+def testPopulationVariables():
+    data = {}
+    algorithm = GeneticAlgorithm(False, 20, "teardrop")
+    for i in range(2, 10, 1):
+        data[i] = []
+        result = algorithm.run_algorithm(20, 30 * i, 30)
+        result_metrics = calculatePopulationStatistics(result)
+        print(result_metrics)
+        data[i].append(result_metrics)
 
-print(data)
+    print(data)
+    plotTestingData(data)

@@ -15,9 +15,10 @@ import foolbox
 #DEBUG = False
 class Model:
 
-   def __init__(self, debug, attack):
+   def __init__(self, debug, attack, save_model):
       self.DEBUG = debug
       self.ATTACK = attack
+      self.SAVE = save_model
 
 
    #Create a label for attack types that are being focused on
@@ -99,7 +100,7 @@ class Model:
          print(recall)
          print(f1)
 
-
+      if self.SAVE:
          #Generate tree
          dot_data = tree.export_graphviz(clf, out_file=None, feature_names=x_test.columns, class_names=["Benign", "Attack"])  
          graph = graphviz.Source(dot_data)  

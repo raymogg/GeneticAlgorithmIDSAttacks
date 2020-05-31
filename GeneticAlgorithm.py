@@ -7,7 +7,7 @@ from tabulate import tabulate
 
 class GeneticAlgorithm:
 
-    def __init__(self, debug, mutation, attack):
+    def __init__(self, debug, mutation, attack, save_model):
         self.DEBUG = debug
         self.MUTATION_PERCENTAGE = mutation
         self.ATTACK = self.select_attack(attack)
@@ -16,7 +16,7 @@ class GeneticAlgorithm:
 
         #Get our model
         print("Initialising Model")
-        self.model_obj = Model(False, attack)
+        self.model_obj = Model(False, attack, save_model)
         self.model = self.model_obj.generate_model()
 
     def select_attack(self, attack_type):

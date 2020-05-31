@@ -50,17 +50,34 @@ def plotTestingData(testingData):
 
 #Runs a basic test on the algorithm and plots the returned sample
 def basicAlgorithmTest():
-    algorithm = GeneticAlgorithm(True, 18, "teardrop")
+    algorithm = GeneticAlgorithm(False, 18, "teardrop", True)
     model = algorithm.getModel()
-    final_population = algorithm.run_algorithm(20, 20, 10)
+    final_population = algorithm.run_algorithm(20, 120, 30)
 
-    # # #Plot original sample and fittest final sample
+    #Show the final population statistics
+    calculatePopulationStatistics(final_population)
+
+    #From the final population, only pick samples that are NOT attacks
+    only_benign = []
+    for sample in final_population:
+        if (sample['attack'][0] == 0):
+            only_benign.append(sample)
+
+    # print(only_benign)
+    # print(len(only_benign))
+    # print("Fittest Sample")
+    # print(only_benign[len(only_benign) - 1]['sample'])
+
+    #Plot model used to evaluate samples
+    #Plot original sample and fittest final sample
     fig, ax = plt.subplots()
     x_range = np.arange(38)
     width = 0.2
     seed_sample = ax.bar(x_range, extractPlotData(algorithm.getSeedAttack()), width, color='r')
-    #TODO plot more than one sample
-    fittest_sample = ax.bar(x_range+width, extractPlotData(final_population[len(final_population) - 1]['sample']), width, color='y')
+    fittest_sample = ax.bar(x_range+width, extractPlotData(only_benign[len(only_benign) - 1]['sample']), width, color='y')
+    
+    # seed_sample = ax.bar(x_range, extractPlotData([0,'udp','private' ,'SF' ,28 ,0 ,0 ,3, 0 ,0 ,0 ,0, 0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 10, 10, 0.0, 0.0,0.0, 0.0, 1.0, 0.0, 0.0, 35, 10, 0.29, 0.11, 0.29, 0.0, 0.0, 0.0, 0.0, 0.0, 'teardrop',11]), width, color='r')
+    # fittest_sample = ax.bar(x_range+width, extractPlotData([0, 'udp', 'private', 'SF', 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 10, 2, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 35, 10, 0.29, 0, 0.29, 0.0, 0, 0.0, 0.0, 0, 'teardrop', 11]), width, color='y')
     ax.legend((seed_sample[0], fittest_sample[0]), ('Parent', 'Attack'))
     plt.xticks(labels=extractPlotLabels(data_headers), ticks=range(38), rotation=90)
     plt.grid(True)
@@ -76,7 +93,7 @@ def testMutationVariable():
     data = {}
     for i in range(0, 55, 5):
         data[i] =  []
-        algorithm = GeneticAlgorithm(False, i, "nmap")
+        algorithm = GeneticAlgorithm(False, i, "nmap", False)
         for j in range(5):
             result = algorithm.run_algorithm(algorithm.getSeedAttack(), 20, 20, 10)
             result_metrics = calculatePopulationStatistics(result)
@@ -104,7 +121,7 @@ def testMutationVariable():
 def testGenerationsVariables():
     #Testing number of generations vs fitness
     data = {}
-    algorithm = GeneticAlgorithm(False, 20, "teardrop")
+    algorithm = GeneticAlgorithm(False, 20, "teardrop", False)
     for i in range(200, 550, 50):
         data[i] = []
         result = algorithm.run_algorithm(algorithm.getSeedAttack(), i, 20, 10)
@@ -116,7 +133,7 @@ def testGenerationsVariables():
 #Tests the ratio of offspring to fittest numbers that produce the best results.
 def testPopulationVariables():
     data = {}
-    algorithm = GeneticAlgorithm(False, 20, "teardrop")
+    algorithm = GeneticAlgorithm(False, 20, "teardrop", False)
     for i in range(2, 10, 1):
         data[i] = []
         result = algorithm.run_algorithm(20, 30 * i, 30)
@@ -126,3 +143,5 @@ def testPopulationVariables():
 
     print(data)
     plotTestingData(data)
+
+basicAlgorithmTest()

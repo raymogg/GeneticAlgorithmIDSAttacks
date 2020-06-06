@@ -7,7 +7,7 @@ from tabulate import tabulate
 
 class GeneticAlgorithm:
 
-    def __init__(self, debug, mutation, attack, save_model):
+    def __init__(self, debug, mutation, attack, save_model, customModel=None):
         self.DEBUG = debug
         self.MUTATION_PERCENTAGE = mutation
         self.ATTACK = self.select_attack(attack)
@@ -20,10 +20,10 @@ class GeneticAlgorithm:
         self.model = self.model_obj.generate_model()
 
     def select_attack(self, attack_type):
-        if (attack_type != 'nmap' and attack_type != 'teardrop'):
-            print("Attack type not supported: ")
-            print(attack_type)
-            exit(0)
+        # if (attack_type != 'nmap' and attack_type != 'teardrop'):
+        #     print("Attack type not supported: ")
+        #     print(attack_type)
+        #     exit(0)
 
         test_df = pd.read_csv("Datasets/NSL-KDD/KDDTest+.txt", header=None, names=data_headers)
         #Pick a random attack of attack_type from here
@@ -184,7 +184,7 @@ class GeneticAlgorithm:
             fittest_samples = []
             for sample in population:
                 sample_fitness = self.fitness(self.model, self.ATTACK, sample)
-                is_attack = self.evaluate_sample(self.model, sample)
+                is_attack = self.evaluate_sample(self.model, sample) #whether the IDS classified this as an attack or not
                 fittest_samples.append({'fitness': sample_fitness, 'sample': sample, 'attack': is_attack})
             fittest_samples.sort(key=self.key_extractor)
             #Trim population if too large

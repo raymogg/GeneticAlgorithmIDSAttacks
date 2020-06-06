@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 from sklearn import tree
-import numpy as np
 from sklearn import tree
 import graphviz
 from labels import data_headers, attack_dict

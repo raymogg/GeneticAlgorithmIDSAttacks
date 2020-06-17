@@ -20,11 +20,6 @@ class GeneticAlgorithm:
         self.model = self.model_obj.generate_model()
 
     def select_attack(self, attack_type):
-        # if (attack_type != 'nmap' and attack_type != 'teardrop'):
-        #     print("Attack type not supported: ")
-        #     print(attack_type)
-        #     exit(0)
-
         test_df = pd.read_csv("Datasets/NSL-KDD/KDDTest+.txt", header=None, names=data_headers)
         #Pick a random attack of attack_type from here
         attacks = test_df.loc[test_df['attack'] == attack_type]

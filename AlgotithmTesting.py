@@ -50,7 +50,7 @@ def plotTestingData(testingData):
 
 #Runs a basic test on the algorithm and plots the returned sample
 def basicAlgorithmTest():
-    algorithm = GeneticAlgorithm(False, 18, "loadmodule", True)
+    algorithm = GeneticAlgorithm(False, 18, "nmap", True)
     model = algorithm.getModel()
     final_population = algorithm.run_algorithm(20, 120, 30)
     print("Algorithm Execution Finished")

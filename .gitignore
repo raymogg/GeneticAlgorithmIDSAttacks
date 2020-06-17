@@ -2,7 +2,9 @@ Articles/
 Datasets/
 Proposal/
 Meetings/
+FinalAlgorithmTesting/
 __pycache__
+.DS_Store
 Poster.key
 Poster_template.key
 Raymond_Poster_draft1.pdf

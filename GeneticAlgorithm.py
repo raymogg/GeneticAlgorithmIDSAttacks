@@ -36,7 +36,7 @@ class GeneticAlgorithm:
     #Function to test if a feature variable is valid for the algorithm execution
     #eg is this a variable the alogrithm should be able to use
     def validId(self, idx):
-        if (idx == 1 or idx == 2 or idx == 3 or idx == 41 or idx == 42):
+        if (idx == 1 or idx == 2 or idx == 3 or idx == 6 or idx == 41 or idx == 42):
             return False
         else:
             return True
@@ -86,12 +86,12 @@ class GeneticAlgorithm:
     def add_mutation(self, sample):
         for idx, val in enumerate(sample):
             if (not self.validId(idx)):
-                #Skip protocol type, service, flag, attack and unknown feature variables
+                #Skip protocol type, service, flag, land and attack feature variables
                 continue
             
             #Mutate each gene or feature variable with 5% change
             rand = random.randint(0, 100)
-            if (rand <= self.MUTATION_PERCENTAGE):
+            if (rand <= self.MUTATION_PERCENTAGE and self.variableCanMutate(sample, idx)):
                 #Mutate by picking from a random index within allowable range
                 max_range = attack_generation_labels[data_headers[idx]][-1]
                 index = random.randint(0, max_range)
@@ -99,6 +99,22 @@ class GeneticAlgorithm:
                 sample[idx] = new_value  
 
         return sample 
+
+    #Function to implement more constraints on variable mutation
+    #Used to ensure variable dependency is upheld for feature variables
+    #Only ever called if the variable is going to mutate, so can do conditional updates here too
+    def variableCanMutate(self, sample, featureVariable):
+        #If num of root feature variable, user must be logged in as root first
+        if (featureVariable == 15 and sample[13] == 0):
+            return False
+        
+        #If the variable is diff srv rate and is mutating, its value must always be
+        # 1 - same srv rate as these add to 1. So set it now
+        if (featureVariable == 29):
+            sample[featureVariable] = 1 - sample[28]
+            return False
+
+
 
     #Function for generating an offspring given two samples
     def generate_offspring(self, sample1, sample2):
